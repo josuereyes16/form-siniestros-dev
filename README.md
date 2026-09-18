@@ -101,42 +101,33 @@ npx playwright install
 
 ## ▶️ Ejecución de las pruebas
 
-### Ejecutar todas las pruebas
+Los scripts están definidos en `package.json` y se ejecutan con `npm run <script>`:
+
+| Script                     | Comando                                                                                                                   | Descripción                                                    |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------| --------------------------------------------------------------- |
+| `test`                     | `playwright test --workers=2`                                                                                             | Ejecuta toda la suite (sin navegador visible).                  |
+| `test:headed`              | `playwright test --workers=2 --headed`                                                                                    | Ejecuta toda la suite mostrando el navegador.                   |
+| `test:complemento`         | `playwright test complemento.spec.js --headed`                                                                            | Ejecuta únicamente el flujo de Complemento.                     |
+| `test:reconsideracion`     | `playwright test reconsideracion.spec.js --headed`                                                                        | Ejecuta únicamente el flujo de Reconsideración.                 |
+| `test:seguimiento`         | `playwright test seguimiento.spec.js --headed`                                                                            | Ejecuta únicamente el flujo de Seguimiento.                     |
+| `test:validaciones`        | `playwright test complemento_validaciones_P2.spec.js reconsideracion_validaciones_P2.spec.js seguimiento_validaciones.spec.js --workers=2 --headed` | Ejecuta las validaciones (P2) de los tres flujos.                |
+| `test:ui`                  | `playwright test --ui`                                                                                                    | Modo UI interactivo de Playwright.                               |
+| `report`                   | `playwright show-report`                                                                                                  | Abre el último reporte generado.                                 |
+
+Ejemplos:
 
 ```bash
-npx playwright test
+npm test
+npm run test:headed
+npm run test:complemento
+npm run test:validaciones
+npm run report
 ```
 
-### Ejecutar las pruebas mostrando el navegador
-
-```bash
-npx playwright test --headed
-```
-
-### Ejecutar un archivo específico
-
-```bash
-npx playwright test tests/complemento.spec.js --headed
-```
-
-### Ejecutar únicamente Chromium
+También es posible seguir usando `npx playwright test ...` directamente para casos puntuales, por ejemplo para filtrar por proyecto:
 
 ```bash
 npx playwright test --project=chromium
-```
-
-### Ejecutar las pruebas en modo UI
-
-Útil para depuración y ejecución interactiva:
-
-```bash
-npx playwright test --ui
-```
-
-### Consultar el reporte
-
-```bash
-npx playwright show-report
 ```
 
 ---
