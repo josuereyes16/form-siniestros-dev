@@ -3,7 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "playwright test --workers=2",
+    "test:headed": "playwright test --workers=2 --headed",
+    "test:complemento": "playwright test complemento.spec.js --headed",
+    "test:reconsideracion": "playwright test reconsideracion.spec.js --headed",
+    "test:seguimiento": "playwright test seguimiento.spec.js --headed",
+    "test:validaciones": "playwright test complemento_validaciones_P2.spec.js reconsideracion_validaciones_P2.spec.js seguimiento_validaciones.spec.js --workers=2 --headed",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -13,4 +22,8 @@
     "@types/node": "^22.20.3",
     "dotenv": "^17.4.2"
   }
+
+  
 }
+
+
