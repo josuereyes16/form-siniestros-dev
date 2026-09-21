@@ -11,7 +11,7 @@
     "test:seguimiento": "playwright test seguimiento.spec.js --headed",
     "test:validaciones": "playwright test complemento_validaciones_P2.spec.js reconsideracion_validaciones_P2.spec.js seguimiento_validaciones.spec.js --workers=2 --headed",
     "test:ui": "playwright test --ui",
-    "report": "playwright show-report"
+    "report": "node scripts/show-latest-report.js"
   },
   "keywords": [],
   "author": "",
