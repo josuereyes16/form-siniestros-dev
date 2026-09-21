@@ -33,6 +33,8 @@ form-siniestros/
 │   ├── PRUEBA.pdf
 │   ├── PRUEBA.xlsx
 │   └── folios_generados.txt
+├── reports/
+│   └── reporte_<fecha>_<hora>/
 ├── tests/
 │   ├── complemento.spec.js
 │   ├── reconsideracion.spec.js
@@ -208,11 +210,37 @@ El archivo `folios_generados.txt` permite conservar la trazabilidad de los folio
 
 ---
 
+## 📊 Historial de reportes
+
+Cada vez que se ejecuta la suite, Playwright genera el reporte HTML dentro de una carpeta con fecha y hora de la corrida:
+
+```text
+reports/reporte_2026-09-18_16-45-30/
+```
+
+Esto permite conservar un historial versionado de los reportes ejecutados, de forma similar a como `folios_generados.txt` lleva el registro de folios.
+
+Para ver el reporte más reciente:
+
+```bash
+npm run report
+```
+
+Para ver un reporte anterior específico:
+
+```bash
+npx playwright show-report reports/reporte_2026-09-18_16-45-30
+```
+
+> Estas carpetas sí se versionan en el repositorio (a diferencia de `test-results/`, que se sigue excluyendo vía `.gitignore` por contener archivos temporales de ejecución).
+
+---
+
 ## 📝 Notas técnicas
 
 * Las pruebas utilizan el mecanismo `filechooser` de Playwright para gestionar la carga de archivos.
 * Los archivos de prueba se mantienen dentro de `data/` para facilitar su reutilización.
-* Los reportes y resultados generados durante las ejecuciones no se versionan.
+* Los reportes HTML se versionan por fecha/hora en `reports/`; los resultados temporales de ejecución (`test-results/`) no se versionan.
 * Las credenciales, variables sensibles y archivos `.env` están excluidos mediante `.gitignore`.
 * La ejecución local y la ejecución mediante GitHub Actions utilizan la misma suite de pruebas.
 

@@ -10,6 +10,19 @@ import path from "node:path";
 dotenv.config({ path: path.resolve(__dirname, ".env") });
 
 /**
+ * Genera un nombre de carpeta tipo reporte_2026-09-18_16-45-30
+ * para conservar un historial de reportes por fecha/hora de ejecucion.
+ */
+function nombreCarpetaReporte() {
+  const ahora = new Date();
+  /** @param {number} n */
+  const pad = (n) => String(n).padStart(2, "0");
+  const fecha = `${ahora.getFullYear()}-${pad(ahora.getMonth() + 1)}-${pad(ahora.getDate())}`;
+  const hora = `${pad(ahora.getHours())}-${pad(ahora.getMinutes())}-${pad(ahora.getSeconds())}`;
+  return `reporte_${fecha}_${hora}`;
+}
+
+/**
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
@@ -24,7 +37,9 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : 3,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: "html",
+  reporter: [
+    ["html", { outputFolder: path.join("reports", nombreCarpetaReporte()) }],
+  ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/login')`. */
