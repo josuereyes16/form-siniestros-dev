@@ -112,7 +112,12 @@ Los scripts están definidos en `package.json` y se ejecutan con `npm run <scrip
 | `test:complemento`         | `playwright test complemento.spec.js --headed`                                                                            | Ejecuta únicamente el flujo de Complemento.                     |
 | `test:reconsideracion`     | `playwright test reconsideracion.spec.js --headed`                                                                        | Ejecuta únicamente el flujo de Reconsideración.                 |
 | `test:seguimiento`         | `playwright test seguimiento.spec.js --headed`                                                                            | Ejecuta únicamente el flujo de Seguimiento.                     |
-| `test:validaciones`        | `playwright test complemento_validaciones_P2.spec.js reconsideracion_validaciones_P2.spec.js seguimiento_validaciones.spec.js --workers=2 --headed` | Ejecuta las validaciones (P2) de los tres flujos.                |
+| `test:nueva-solicitud`     | `playwright test nueva-solicitud.spec.js --headed`                                                                        | Ejecuta únicamente el flujo de Nueva Solicitud.                 |
+| `test:validaciones:complemento`     | `playwright test complemento_validaciones_P2.spec.js --headed`                                                    | Ejecuta las validaciones (P2) del flujo de Complemento.          |
+| `test:validaciones:reconsideracion` | `playwright test reconsideracion_validaciones_P2.spec.js --headed`                                                | Ejecuta las validaciones (P2) del flujo de Reconsideración.      |
+| `test:validaciones:seguimiento`     | `playwright test seguimiento_validaciones.spec.js --headed`                                                       | Ejecuta las validaciones del flujo de Seguimiento.               |
+| `test:validaciones:nueva-solicitud` | `playwright test nueva_solicitud_validaciones_P2.spec.js --headed`                                                | Ejecuta las validaciones (P2) del flujo de Nueva Solicitud.      |
+| `test:validaciones:full`  | `playwright test complemento_validaciones_P2.spec.js reconsideracion_validaciones_P2.spec.js seguimiento_validaciones.spec.js nueva_solicitud_validaciones_P2.spec.js --workers=2 --headed` | Ejecuta las validaciones (P2) de los cuatro flujos.              |
 | `test:ui`                  | `playwright test --ui`                                                                                                    | Modo UI interactivo de Playwright.                               |
 | `report`                   | `playwright show-report`                                                                                                  | Abre el último reporte generado.                                 |
 
@@ -122,7 +127,10 @@ Ejemplos:
 npm test
 npm run test:headed
 npm run test:complemento
-npm run test:validaciones
+npm run test:nueva-solicitud
+npm run test:validaciones:complemento
+npm run test:validaciones:nueva-solicitud
+npm run test:validaciones:full
 npm run report
 ```
 
