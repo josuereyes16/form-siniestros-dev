@@ -1,6 +1,10 @@
 // tests/nueva_solicitud_validaciones_P2.spec.js
 import { test, expect } from '@playwright/test';
 
+// Longitud permitida para el Número de póliza (ajustar aquí si cambia la regla de negocio)
+const POLIZA_MIN_DIGITOS = 3;
+const POLIZA_MAX_DIGITOS = 20;
+
 const OFICINAS_ESPERADAS = [
   'OFICINA SILAO',
   'OFICINA CELAYA',
@@ -101,6 +105,35 @@ test.describe('Validaciones - Nueva Solicitud (Paso 2)', () => {
     await poliza.click();
     await poliza.pressSequentially('100000010050');
     await expect(poliza).toHaveValue('100000010050');
+  });
+
+  test(`Número de póliza - máximo ${POLIZA_MAX_DIGITOS} dígitos`, async ({ page }) => {
+    await irAlPaso2(page);
+    const poliza = page.getByRole('textbox', { name: 'Número de póliza' });
+    const valorMaximo = '1'.repeat(POLIZA_MAX_DIGITOS);
+
+    await poliza.click();
+    await poliza.pressSequentially(valorMaximo + '999');
+    await expect(poliza).toHaveValue(valorMaximo);
+  });
+
+  test(`Número de póliza - mínimo ${POLIZA_MIN_DIGITOS} dígitos para habilitar Validar`, async ({ page }) => {
+    await irAlPaso2(page);
+    const poliza = page.getByRole('textbox', { name: 'Número de póliza' });
+    const validar = page.getByRole('button', { name: 'Validar' });
+
+    await page.getByRole('combobox', { name: 'Oficina *' }).click();
+    await page.getByRole('listbox', { name: 'Seleccione una opción' })
+      .getByRole('option', { name: 'MULTINACIONALES', exact: true })
+      .click();
+    await page.getByRole('combobox', { name: 'Ramo *' }).click();
+    await page.getByRole('option', { name: '012' }).click();
+
+    await poliza.fill('1'.repeat(POLIZA_MIN_DIGITOS - 1));
+    await expect(validar).toBeDisabled();
+
+    await poliza.fill('1'.repeat(POLIZA_MIN_DIGITOS));
+    await expect(validar).toBeEnabled();
   });
 
   test('Ramo - solo muestra la opción 012', async ({ page }) => {

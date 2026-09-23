@@ -7,6 +7,7 @@ import { defineConfig, devices } from "@playwright/test";
  */
 import dotenv from "dotenv";
 import path from "node:path";
+import fs from "node:fs";
 dotenv.config({ path: path.resolve(__dirname, ".env") });
 
 /**
@@ -21,6 +22,30 @@ function nombreCarpetaReporte() {
   const hora = `${pad(ahora.getHours())}-${pad(ahora.getMinutes())}-${pad(ahora.getSeconds())}`;
   return `reporte_${fecha}_${hora}`;
 }
+
+/** Cantidad de reportes a conservar en reports/ (incluye el de la corrida actual). */
+const REPORTES_A_CONSERVAR = 5;
+
+/**
+ * Borra los reportes más antiguos de reports/ antes de cada corrida,
+ * dejando espacio para el nuevo. Solo corre en el proceso principal, no en los workers.
+ */
+function limpiarReportesAntiguos() {
+  const carpeta = path.resolve(__dirname, "reports");
+  if (process.env.TEST_WORKER_INDEX !== undefined || !fs.existsSync(carpeta)) return;
+
+  const antiguos = fs
+    .readdirSync(carpeta, { withFileTypes: true })
+    .filter((e) => e.isDirectory() && e.name.startsWith("reporte_"))
+    .map((e) => e.name)
+    .sort()
+    .slice(0, -(REPORTES_A_CONSERVAR - 1) || undefined);
+
+  for (const nombre of antiguos) {
+    fs.rmSync(path.join(carpeta, nombre), { recursive: true, force: true });
+  }
+}
+limpiarReportesAntiguos();
 
 /**
  * @see https://playwright.dev/docs/test-configuration

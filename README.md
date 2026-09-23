@@ -15,9 +15,16 @@ Actualmente se automatizan los siguientes tipos de trámite:
 
 | Trámite                | Descripción                                                                   |
 | ---------------------- | ----------------------------------------------------------------------------- |
+| 🆕 **Nueva solicitud** | Permite reportar un siniestro por primera vez.                                |
 | 📄 **Complemento**     | Permite agregar información o documentos a un trámite previamente registrado. |
 | 🔄 **Reconsideración** | Permite solicitar la revisión de una resolución previa.                       |
 | 🕐 **Seguimiento**     | Permite consultar el avance y estado de un trámite mediante su folio.         |
+
+### 🔗 Historias de usuario
+
+| Trámite     | HU        |
+| ----------- | --------- |
+| Seguimiento | HU 24607  |
 
 ---
 
@@ -35,10 +42,18 @@ form-siniestros/
 │   └── folios_generados.txt
 ├── reports/
 │   └── reporte_<fecha>_<hora>/
+├── scripts/
+│   └── show-latest-report.js
 ├── tests/
 │   ├── complemento.spec.js
+│   ├── complemento_validaciones_P2.spec.js
+│   ├── nueva-solicitud.spec.js
+│   ├── nueva_solicitud_validaciones_P2.spec.js
 │   ├── reconsideracion.spec.js
-│   └── seguimiento.spec.js
+│   ├── reconsideracion_validaciones_P2.spec.js
+│   ├── seguimiento.spec.js
+│   └── seguimiento_validaciones.spec.js
+├── .env
 ├── .gitignore
 ├── package.json
 ├── package-lock.json
@@ -54,9 +69,15 @@ Contiene archivos utilizados como datos de prueba durante la ejecución de las a
 
 Contiene las pruebas automatizadas correspondientes a los diferentes flujos del formulario:
 
+* `nueva-solicitud.spec.js` → flujo principal de Nueva solicitud.
 * `complemento.spec.js` → flujo principal de Complemento.
 * `reconsideracion.spec.js` → flujo principal de Reconsideración.
-* `seguimiento.spec.js` → consulta y validación del estado de un trámite.
+* `seguimiento.spec.js` → flujo principal de Seguimiento (consulta exitosa de un folio).
+* `*_validaciones*.spec.js` → validaciones de cada flujo contra los criterios de aceptación de su HU.
+
+### 🛠️ `scripts/`
+
+* `show-latest-report.js` → abre el reporte HTML más reciente de `reports/`.
 
 ### 🤖 `.github/workflows/`
 
@@ -103,33 +124,50 @@ npx playwright install
 
 ## ▶️ Ejecución de las pruebas
 
-Los scripts están definidos en `package.json` y se ejecutan con `npm run <script>`:
+Los scripts están definidos en `package.json` y se ejecutan con `npm run <script>`.
 
-| Script                     | Comando                                                                                                                   | Descripción                                                    |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------------| --------------------------------------------------------------- |
-| `test`                     | `playwright test --workers=2`                                                                                             | Ejecuta toda la suite (sin navegador visible).                  |
-| `test:headed`              | `playwright test --workers=2 --headed`                                                                                    | Ejecuta toda la suite mostrando el navegador.                   |
-| `test:complemento`         | `playwright test complemento.spec.js --headed`                                                                            | Ejecuta únicamente el flujo de Complemento.                     |
-| `test:reconsideracion`     | `playwright test reconsideracion.spec.js --headed`                                                                        | Ejecuta únicamente el flujo de Reconsideración.                 |
-| `test:seguimiento`         | `playwright test seguimiento.spec.js --headed`                                                                            | Ejecuta únicamente el flujo de Seguimiento.                     |
-| `test:nueva-solicitud`     | `playwright test nueva-solicitud.spec.js --headed`                                                                        | Ejecuta únicamente el flujo de Nueva Solicitud.                 |
-| `test:validaciones:complemento`     | `playwright test complemento_validaciones_P2.spec.js --headed`                                                    | Ejecuta las validaciones (P2) del flujo de Complemento.          |
-| `test:validaciones:reconsideracion` | `playwright test reconsideracion_validaciones_P2.spec.js --headed`                                                | Ejecuta las validaciones (P2) del flujo de Reconsideración.      |
-| `test:validaciones:seguimiento`     | `playwright test seguimiento_validaciones.spec.js --headed`                                                       | Ejecuta las validaciones del flujo de Seguimiento.               |
-| `test:validaciones:nueva-solicitud` | `playwright test nueva_solicitud_validaciones_P2.spec.js --headed`                                                | Ejecuta las validaciones (P2) del flujo de Nueva Solicitud.      |
-| `test:validaciones:full`  | `playwright test complemento_validaciones_P2.spec.js reconsideracion_validaciones_P2.spec.js seguimiento_validaciones.spec.js nueva_solicitud_validaciones_P2.spec.js --workers=2 --headed` | Ejecuta las validaciones (P2) de los cuatro flujos.              |
-| `test:ui`                  | `playwright test --ui`                                                                                                    | Modo UI interactivo de Playwright.                               |
-| `report`                   | `playwright show-report`                                                                                                  | Abre el último reporte generado.                                 |
+Cada trámite tiene siempre tres comandos:
+
+| Script                        | Ejecuta                                   |
+| ----------------------------- | ----------------------------------------- |
+| `test:<trámite>`              | Solo el camino feliz.                     |
+| `test:<trámite>:validaciones` | Solo las validaciones de la HU.           |
+| `test:<trámite>:full`         | Camino feliz + validaciones.              |
+
+Trámites disponibles: `nueva-solicitud`, `complemento`, `reconsideracion`, `seguimiento`.
+
+| Script                               | Comando                                                                                              |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| `test:nueva-solicitud`               | `playwright test nueva-solicitud.spec.js --headed`                                                   |
+| `test:nueva-solicitud:validaciones`  | `playwright test nueva_solicitud_validaciones_P2.spec.js --headed`                                   |
+| `test:nueva-solicitud:full`          | `playwright test nueva-solicitud.spec.js nueva_solicitud_validaciones_P2.spec.js --workers=2 --headed` |
+| `test:complemento`                   | `playwright test complemento.spec.js --headed`                                                       |
+| `test:complemento:validaciones`      | `playwright test complemento_validaciones_P2.spec.js --headed`                                       |
+| `test:complemento:full`              | `playwright test complemento.spec.js complemento_validaciones_P2.spec.js --workers=2 --headed`       |
+| `test:reconsideracion`               | `playwright test reconsideracion.spec.js --headed`                                                   |
+| `test:reconsideracion:validaciones`  | `playwright test reconsideracion_validaciones_P2.spec.js --headed`                                   |
+| `test:reconsideracion:full`          | `playwright test reconsideracion.spec.js reconsideracion_validaciones_P2.spec.js --workers=2 --headed` |
+| `test:seguimiento`                   | `playwright test seguimiento.spec.js --headed`                                                       |
+| `test:seguimiento:validaciones`      | `playwright test seguimiento_validaciones.spec.js --headed`                                          |
+| `test:seguimiento:full`              | `playwright test seguimiento.spec.js seguimiento_validaciones.spec.js --workers=2 --headed`          |
+
+Comandos generales:
+
+| Script                   | Comando                                                                                              | Descripción                                        |
+| ------------------------ | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `test`                   | `playwright test --workers=2`                                                                        | Ejecuta toda la suite (sin navegador visible).     |
+| `test:headed`            | `playwright test --workers=2 --headed`                                                               | Ejecuta toda la suite mostrando el navegador.      |
+| `test:validaciones:full` | `playwright test complemento_validaciones_P2.spec.js reconsideracion_validaciones_P2.spec.js seguimiento_validaciones.spec.js nueva_solicitud_validaciones_P2.spec.js --workers=2 --headed` | Ejecuta las validaciones de los cuatro trámites. |
+| `test:ui`                | `playwright test --ui`                                                                               | Modo UI interactivo de Playwright.                 |
+| `report`                 | `node scripts/show-latest-report.js`                                                                 | Abre el último reporte generado en `reports/`.     |
 
 Ejemplos:
 
 ```bash
 npm test
-npm run test:headed
-npm run test:complemento
-npm run test:nueva-solicitud
-npm run test:validaciones:complemento
-npm run test:validaciones:nueva-solicitud
+npm run test:seguimiento
+npm run test:seguimiento:validaciones
+npm run test:seguimiento:full
 npm run test:validaciones:full
 npm run report
 ```
@@ -226,7 +264,9 @@ Cada vez que se ejecuta la suite, Playwright genera el reporte HTML dentro de un
 reports/reporte_2026-09-18_16-45-30/
 ```
 
-Esto permite conservar un historial versionado de los reportes ejecutados, de forma similar a como `folios_generados.txt` lleva el registro de folios.
+Esto permite conservar localmente un historial de los reportes ejecutados.
+
+Solo se conservan los **5 reportes más recientes**: al iniciar cada corrida se borran automáticamente los más antiguos. Para cambiar la cantidad, ajustar `REPORTES_A_CONSERVAR` en `playwright.config.js`.
 
 Para ver el reporte más reciente:
 
@@ -240,7 +280,7 @@ Para ver un reporte anterior específico:
 npx playwright show-report reports/reporte_2026-09-18_16-45-30
 ```
 
-> Estas carpetas sí se versionan en el repositorio (a diferencia de `test-results/`, que se sigue excluyendo vía `.gitignore` por contener archivos temporales de ejecución).
+> Estas carpetas **no** se suben al repositorio (están excluidas en `.gitignore`), porque pesan y cambian en cada corrida. Lo mismo aplica para `test-results/`.
 
 ---
 
@@ -248,7 +288,7 @@ npx playwright show-report reports/reporte_2026-09-18_16-45-30
 
 * Las pruebas utilizan el mecanismo `filechooser` de Playwright para gestionar la carga de archivos.
 * Los archivos de prueba se mantienen dentro de `data/` para facilitar su reutilización.
-* Los reportes HTML se versionan por fecha/hora en `reports/`; los resultados temporales de ejecución (`test-results/`) no se versionan.
+* Los reportes HTML se guardan por fecha/hora en `reports/`; ni los reportes ni los resultados temporales de ejecución (`test-results/`) se suben al repositorio.
 * Las credenciales, variables sensibles y archivos `.env` están excluidos mediante `.gitignore`.
 * La ejecución local y la ejecución mediante GitHub Actions utilizan la misma suite de pruebas.
 
