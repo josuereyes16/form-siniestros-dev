@@ -1,4 +1,4 @@
-// tests/nueva_solicitud_validaciones_P2.spec.js
+// tests/nueva-solicitud/P2.spec.js
 import { test, expect } from '@playwright/test';
 
 // Longitud permitida para el Número de póliza (ajustar aquí si cambia la regla de negocio)

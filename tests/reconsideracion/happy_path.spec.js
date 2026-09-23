@@ -1,4 +1,4 @@
-// tests/reconsideracion.spec.js
+// tests/reconsideracion/happy_path.spec.js
 import { test, expect } from '@playwright/test';
 import path from 'node:path';
 import fs from 'node:fs';
@@ -14,9 +14,9 @@ const DATOS = {
   motivoReconsideracion: 'SOLICITO REVISIÓN DEL DICTAMEN EMITIDO',
   comentarios: 'Solicitud de reconsideración',
   archivosAdjuntos: [
-    path.resolve(__dirname, '../data/PRUEBA.png'),
-    path.resolve(__dirname, '../data/PRUEBA.pdf'),
-    path.resolve(__dirname, '../data/PRUEBA.xlsx'),
+    path.resolve(__dirname, '../../data/PRUEBA.png'),
+    path.resolve(__dirname, '../../data/PRUEBA.pdf'),
+    path.resolve(__dirname, '../../data/PRUEBA.xlsx'),
   ],
 };
 // ============================================
@@ -82,7 +82,7 @@ test.describe('Formulario de Reclamaciones - Reconsideración', () => {
     // Guarda el folio en el mismo historial compartido
     const fecha = new Date().toLocaleString('es-CO');
     const linea = `${fecha} | Reconsideración | ${folioTexto}\n`;
-    const rutaHistorial = path.resolve(__dirname, '../data/folios_generados.txt');
+    const rutaHistorial = path.resolve(__dirname, '../../data/folios_generados.txt');
     fs.appendFileSync(rutaHistorial, linea);
   });
 });

@@ -1,6 +1,7 @@
-// tests/seguimiento_validaciones.spec.js
+// tests/seguimiento/P1HU_24607.spec.js
 // HU 24607 - Consulta y seguimiento de trámite por folio (Seguimiento trámite)
 import { test, expect } from "@playwright/test";
+import { abrirPaso1YSeleccionar, opcionPaso1 } from "../helpers/navegacion.js";
 
 const FOLIO_NO_EXISTENTE = "SURA1234567890MX";
 const API_SEGUIMIENTO = "**/api/seguimiento/**";
@@ -60,26 +61,13 @@ const TEXTOS = {
 };
 
 test.describe("HU 24607 - Validaciones Seguimiento trámite", () => {
-  const opcionSeguimiento = (page) =>
-    page.getByRole("radio", { name: "Seguimiento trámite Consulta" });
+  const opcionSeguimiento = (page) => opcionPaso1(page, "seguimiento");
   const campoFolio = (page) => page.getByRole("textbox", { name: "FOLIO" });
   const btnConsultar = (page) =>
     page.getByRole("button", { name: "Consultar" });
   const tituloAvance = (page) =>
     page.getByRole("heading", { name: "AVANCE DEL TRÁMITE" });
   const tituloPaso1 = (page) => page.getByText("PASO 1 · EMPECEMOS");
-
-  // Ocasionalmente la app no hidrata y ningún clic surte efecto hasta recargar:
-  // se abre el Paso 1 y se selecciona la opción, recargando la página en cada reintento.
-  // `antesDeSeleccionar` corre sobre la página recién cargada (ej. validar el estado inicial).
-  async function abrirPaso1YSeleccionar(page, opcion, antesDeSeleccionar = async () => {}) {
-    await expect(async () => {
-      await page.goto("/solicitud-reclamaciones");
-      await antesDeSeleccionar();
-      await opcion.click();
-      await expect(opcion).toHaveAttribute("aria-checked", "true", { timeout: 3000 });
-    }).toPass({ timeout: 30000 });
-  }
 
   async function irAConsultaSeguimiento(page) {
     await abrirPaso1YSeleccionar(page, opcionSeguimiento(page));

@@ -1,4 +1,4 @@
-// tests/reconsideracion_validaciones_P2.spec.js
+// tests/reconsideracion/P2.spec.js
 import { test, expect } from '@playwright/test';
 
 test.describe('Validaciones - Reconsideración (Paso 2)', () => {

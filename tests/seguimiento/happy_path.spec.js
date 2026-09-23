@@ -1,5 +1,6 @@
-// tests/seguimiento.spec.js
+// tests/seguimiento/happy_path.spec.js
 import { test, expect } from '@playwright/test';
+import { abrirPaso1YSeleccionar } from '../helpers/navegacion.js';
 
 // ============================================
 // 🔧 CONFIGURACIÓN: cambia el folio a consultar
@@ -13,13 +14,7 @@ test.describe('Formulario de Reclamaciones - Seguimiento', () => {
   test('debe consultar el estado de un trámite existente', async ({ page }) => {
 
     // ===== PASO 1: Seleccionar tipo de trámite =====
-    const opcion = page.getByRole('radio', { name: 'Seguimiento trámite Consulta' });
-    // Ocasionalmente la app no hidrata y el clic no surte efecto: se recarga y reintenta
-    await expect(async () => {
-      await page.goto('/solicitud-reclamaciones');
-      await opcion.click();
-      await expect(opcion).toHaveAttribute('aria-checked', 'true', { timeout: 3000 });
-    }).toPass({ timeout: 30000 });
+    await abrirPaso1YSeleccionar(page, 'seguimiento');
     await page.getByRole('button', { name: 'Continuar' }).click();
     await expect(page.getByRole('heading', { name: 'Vamos al día con tu caso' })).toBeVisible();
 

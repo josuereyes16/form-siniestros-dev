@@ -1,4 +1,4 @@
-// tests/complemento.spec.js
+// tests/complemento/happy_path.spec.js
 import { test, expect } from '@playwright/test';
 import path from 'node:path';
 import fs from 'node:fs';
@@ -14,9 +14,9 @@ const DATOS = {
   motivoComplemento: 'ADJUNTAR DOCUMENTACIÓN RESTANTE',
   comentarios: 'Solicitud de complemento',
   archivosAdjuntos: [
-    path.resolve(__dirname, '../data/PRUEBA.png'),
-    path.resolve(__dirname, '../data/PRUEBA.pdf'),
-    path.resolve(__dirname, '../data/PRUEBA.xlsx'),
+    path.resolve(__dirname, '../../data/PRUEBA.png'),
+    path.resolve(__dirname, '../../data/PRUEBA.pdf'),
+    path.resolve(__dirname, '../../data/PRUEBA.xlsx'),
   ],
 };
 // ============================================
@@ -82,7 +82,7 @@ test.describe('Formulario de Reclamaciones - Complemento', () => {
     // Guarda el folio en un archivo de historial (agrega, no borra lo anterior)
     const fecha = new Date().toLocaleString('es-CO');
     const linea = `${fecha} | Complemento | ${folioTexto}\n`;
-    const rutaHistorial = path.resolve(__dirname, '../data/folios_generados.txt');
+    const rutaHistorial = path.resolve(__dirname, '../../data/folios_generados.txt');
     fs.appendFileSync(rutaHistorial, linea);
   });
 });

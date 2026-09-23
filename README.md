@@ -22,9 +22,12 @@ Actualmente se automatizan los siguientes tipos de trámite:
 
 ### 🔗 Historias de usuario
 
-| Trámite     | HU        |
-| ----------- | --------- |
-| Seguimiento | HU 24607  |
+| Trámite         | Paso   | HU       | Spec                                   |
+| --------------- | ------ | -------- | -------------------------------------- |
+| Nueva solicitud | Paso 2 | —        | `tests/nueva-solicitud/P2.spec.js`  |
+| Complemento     | Paso 2 | —        | `tests/complemento/P2.spec.js`      |
+| Reconsideración | Paso 2 | —        | `tests/reconsideracion/P2.spec.js`  |
+| Seguimiento     | Paso 1 | HU 24607 | `tests/seguimiento/P1HU_24607.spec.js` |
 
 ---
 
@@ -45,14 +48,20 @@ form-siniestros/
 ├── scripts/
 │   └── show-latest-report.js
 ├── tests/
-│   ├── complemento.spec.js
-│   ├── complemento_validaciones_P2.spec.js
-│   ├── nueva-solicitud.spec.js
-│   ├── nueva_solicitud_validaciones_P2.spec.js
-│   ├── reconsideracion.spec.js
-│   ├── reconsideracion_validaciones_P2.spec.js
-│   ├── seguimiento.spec.js
-│   └── seguimiento_validaciones.spec.js
+│   ├── helpers/
+│   │   └── navegacion.js
+│   ├── nueva-solicitud/
+│   │   ├── happy_path.spec.js
+│   │   └── P2.spec.js
+│   ├── complemento/
+│   │   ├── happy_path.spec.js
+│   │   └── P2.spec.js
+│   ├── reconsideracion/
+│   │   ├── happy_path.spec.js
+│   │   └── P2.spec.js
+│   └── seguimiento/
+│       ├── happy_path.spec.js
+│       └── P1HU_24607.spec.js
 ├── .env
 ├── .gitignore
 ├── package.json
@@ -67,13 +76,13 @@ Contiene archivos utilizados como datos de prueba durante la ejecución de las a
 
 ### 🧪 `tests/`
 
-Contiene las pruebas automatizadas correspondientes a los diferentes flujos del formulario:
+Una carpeta por flujo, con un archivo por HU (una HU por paso):
 
-* `nueva-solicitud.spec.js` → flujo principal de Nueva solicitud.
-* `complemento.spec.js` → flujo principal de Complemento.
-* `reconsideracion.spec.js` → flujo principal de Reconsideración.
-* `seguimiento.spec.js` → flujo principal de Seguimiento (consulta exitosa de un folio).
-* `*_validaciones*.spec.js` → validaciones de cada flujo contra los criterios de aceptación de su HU.
+* `<flujo>/happy_path.spec.js` → camino feliz del flujo completo.
+* `<flujo>/P<N>HU_<número>.spec.js` → validaciones de la HU del paso N contra sus criterios de aceptación (ej. `P1HU_24607.spec.js` = Paso 1, HU 24607). Mientras no se asocie la HU, el archivo se llama solo `P<N>.spec.js`.
+* `helpers/navegacion.js` → funciones compartidas por todos los flujos (ej. abrir el Paso 1 y seleccionar un trámite, recargando si la página no responde).
+
+Para agregar la HU de un paso nuevo basta con crear `tests/<flujo>/P<N>HU_<número>.spec.js`: los comandos `:validaciones` y `:full` del flujo la incluyen automáticamente.
 
 ### 🛠️ `scripts/`
 
@@ -126,30 +135,35 @@ npx playwright install
 
 Los scripts están definidos en `package.json` y se ejecutan con `npm run <script>`.
 
-Cada trámite tiene siempre tres comandos:
+Cada trámite tiene siempre estos comandos:
 
-| Script                        | Ejecuta                                   |
-| ----------------------------- | ----------------------------------------- |
-| `test:<trámite>`              | Solo el camino feliz.                     |
-| `test:<trámite>:validaciones` | Solo las validaciones de la HU.           |
-| `test:<trámite>:full`         | Camino feliz + validaciones.              |
+| Script                        | Ejecuta                                              |
+| ----------------------------- | ---------------------------------------------------- |
+| `test:<trámite>`              | Solo el camino feliz.                                |
+| `test:<trámite>:p<N>`      | Solo las validaciones de la HU de ese paso.          |
+| `test:<trámite>:validaciones` | Las validaciones de todas las HU del trámite.        |
+| `test:<trámite>:full`         | Camino feliz + validaciones (toda la carpeta).       |
 
 Trámites disponibles: `nueva-solicitud`, `complemento`, `reconsideracion`, `seguimiento`.
 
-| Script                               | Comando                                                                                              |
-| ------------------------------------ | ---------------------------------------------------------------------------------------------------- |
-| `test:nueva-solicitud`               | `playwright test nueva-solicitud.spec.js --headed`                                                   |
-| `test:nueva-solicitud:validaciones`  | `playwright test nueva_solicitud_validaciones_P2.spec.js --headed`                                   |
-| `test:nueva-solicitud:full`          | `playwright test nueva-solicitud.spec.js nueva_solicitud_validaciones_P2.spec.js --workers=2 --headed` |
-| `test:complemento`                   | `playwright test complemento.spec.js --headed`                                                       |
-| `test:complemento:validaciones`      | `playwright test complemento_validaciones_P2.spec.js --headed`                                       |
-| `test:complemento:full`              | `playwright test complemento.spec.js complemento_validaciones_P2.spec.js --workers=2 --headed`       |
-| `test:reconsideracion`               | `playwright test reconsideracion.spec.js --headed`                                                   |
-| `test:reconsideracion:validaciones`  | `playwright test reconsideracion_validaciones_P2.spec.js --headed`                                   |
-| `test:reconsideracion:full`          | `playwright test reconsideracion.spec.js reconsideracion_validaciones_P2.spec.js --workers=2 --headed` |
-| `test:seguimiento`                   | `playwright test seguimiento.spec.js --headed`                                                       |
-| `test:seguimiento:validaciones`      | `playwright test seguimiento_validaciones.spec.js --headed`                                          |
-| `test:seguimiento:full`              | `playwright test seguimiento.spec.js seguimiento_validaciones.spec.js --workers=2 --headed`          |
+| Script                               | Comando                                                                     |
+| ------------------------------------ | --------------------------------------------------------------------------- |
+| `test:nueva-solicitud`               | `playwright test tests/nueva-solicitud/happy_path.spec.js --headed`    |
+| `test:nueva-solicitud:p2`         | `playwright test tests/nueva-solicitud/P2 --headed`                      |
+| `test:nueva-solicitud:validaciones`  | `playwright test tests/nueva-solicitud/P[0-9] --workers=2 --headed`           |
+| `test:nueva-solicitud:full`          | `playwright test tests/nueva-solicitud/ --workers=2 --headed`               |
+| `test:complemento`                   | `playwright test tests/complemento/happy_path.spec.js --headed`            |
+| `test:complemento:p2`             | `playwright test tests/complemento/P2 --headed`                          |
+| `test:complemento:validaciones`      | `playwright test tests/complemento/P[0-9] --workers=2 --headed`               |
+| `test:complemento:full`              | `playwright test tests/complemento/ --workers=2 --headed`                   |
+| `test:reconsideracion`               | `playwright test tests/reconsideracion/happy_path.spec.js --headed`    |
+| `test:reconsideracion:p2`         | `playwright test tests/reconsideracion/P2 --headed`                      |
+| `test:reconsideracion:validaciones`  | `playwright test tests/reconsideracion/P[0-9] --workers=2 --headed`           |
+| `test:reconsideracion:full`          | `playwright test tests/reconsideracion/ --workers=2 --headed`               |
+| `test:seguimiento`                   | `playwright test tests/seguimiento/happy_path.spec.js --headed`            |
+| `test:seguimiento:p1`             | `playwright test tests/seguimiento/P1 --headed`                          |
+| `test:seguimiento:validaciones`      | `playwright test tests/seguimiento/P[0-9] --workers=2 --headed`               |
+| `test:seguimiento:full`              | `playwright test tests/seguimiento/ --workers=2 --headed`                   |
 
 Comandos generales:
 
@@ -157,7 +171,7 @@ Comandos generales:
 | ------------------------ | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
 | `test`                   | `playwright test --workers=2`                                                                        | Ejecuta toda la suite (sin navegador visible).     |
 | `test:headed`            | `playwright test --workers=2 --headed`                                                               | Ejecuta toda la suite mostrando el navegador.      |
-| `test:validaciones:full` | `playwright test complemento_validaciones_P2.spec.js reconsideracion_validaciones_P2.spec.js seguimiento_validaciones.spec.js nueva_solicitud_validaciones_P2.spec.js --workers=2 --headed` | Ejecuta las validaciones de los cuatro trámites. |
+| `test:validaciones:full` | `playwright test tests/nueva-solicitud/P[0-9] tests/complemento/P[0-9] tests/reconsideracion/P[0-9] tests/seguimiento/P[0-9] --workers=2 --headed` | Ejecuta las validaciones de los cuatro trámites. |
 | `test:ui`                | `playwright test --ui`                                                                               | Modo UI interactivo de Playwright.                 |
 | `report`                 | `node scripts/show-latest-report.js`                                                                 | Abre el último reporte generado en `reports/`.     |
 
@@ -166,6 +180,7 @@ Ejemplos:
 ```bash
 npm test
 npm run test:seguimiento
+npm run test:seguimiento:p1
 npm run test:seguimiento:validaciones
 npm run test:seguimiento:full
 npm run test:validaciones:full

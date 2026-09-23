@@ -1,4 +1,4 @@
-// tests/complemento_validaciones_P2.spec.js
+// tests/complemento/P2.spec.js
 import { test, expect } from '@playwright/test';
 
 test.describe('Validaciones - Complemento (Paso 2)', () => {

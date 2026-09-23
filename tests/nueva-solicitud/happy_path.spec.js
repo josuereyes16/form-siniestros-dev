@@ -1,4 +1,4 @@
-// tests/nueva_solicitud.spec.js
+// tests/nueva-solicitud/happy_path.spec.js
 import { test, expect } from '@playwright/test';
 import path from 'node:path';
 import fs from 'node:fs';
@@ -18,7 +18,7 @@ const DATOS = {
   telefonoCelular: '3223223222',
   domicilio: 'CIRCUNVALAR',
   numeroIdentificacion: '1234567',
-  archivoIdentificacion: path.resolve(__dirname, '../data/PRUEBA.pdf'),
+  archivoIdentificacion: path.resolve(__dirname, '../../data/PRUEBA.pdf'),
 };
 
 async function obtenerCodigoOTP(context, buzon) {
@@ -205,7 +205,7 @@ test.describe('Nueva Solicitud - Happy Path', () => {
 
     const fecha = new Date().toLocaleString('es-CO');
     const linea = `${fecha} | Nueva Solicitud | ${folioTexto}\n`;
-    const rutaHistorial = path.resolve(__dirname, '../data/folios_generados.txt');
+    const rutaHistorial = path.resolve(__dirname, '../../data/folios_generados.txt');
     fs.appendFileSync(rutaHistorial, linea);
   });
 });
