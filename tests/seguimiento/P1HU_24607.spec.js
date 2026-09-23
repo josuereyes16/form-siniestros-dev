@@ -60,7 +60,7 @@ const TEXTOS = {
     "Al reiniciar, perderás la información que has ingresado hasta ahora y volverás al inicio del trámite. Esta acción no se puede deshacer.",
 };
 
-test.describe("HU 24607 - Validaciones Seguimiento trámite", () => {
+test.describe("HU 24607 - Seguimiento trámite", () => {
   const opcionSeguimiento = (page) => opcionPaso1(page, "seguimiento");
   const campoFolio = (page) => page.getByRole("textbox", { name: "FOLIO" });
   const btnConsultar = (page) =>
@@ -90,14 +90,6 @@ test.describe("HU 24607 - Validaciones Seguimiento trámite", () => {
 
   const estadosEsperados = (etapas) =>
     Object.fromEntries(ETAPAS.map((etapa, i) => [etapa, etapas[i]]));
-
-  const respuestaSeguimiento = (folio, estatus) => ({
-    status: 200,
-    contentType: "application/json",
-    body: JSON.stringify({
-      data: { folio, estatus, fechaEnvio: "2026-09-23", tipoSolicitud: "Nueva solicitud" },
-    }),
-  });
 
   test("CA01 - Paso 1 muestra la opción Seguimiento trámite con su descripción", async ({ page }) => {
     await page.goto("/solicitud-reclamaciones");
@@ -229,23 +221,9 @@ test.describe("HU 24607 - Validaciones Seguimiento trámite", () => {
     await expect(page.locator("ol > li")).toHaveText(ETAPAS);
   });
 
-  // Respuesta simulada: valida cómo pinta la app cada estatus sin depender de los datos de DEV
-  for (const { estatus, etapas } of ESTATUS) {
-    test(`CA10 - Estatus "${estatus}" (simulado) marca etapas: ${etapas.join(", ")}`, async ({ page }) => {
-      await page.route(API_SEGUIMIENTO, (route) =>
-        route.fulfill(respuestaSeguimiento(FOLIO_NO_EXISTENTE, estatus)),
-      );
-      await irAConsultaSeguimiento(page);
-      await consultarFolio(page, FOLIO_NO_EXISTENTE);
-
-      await expect(tituloAvance(page)).toBeVisible();
-      await expect.poll(() => estadosEtapas(page)).toEqual(estadosEsperados(etapas));
-    });
-  }
-
-  // Folio real en DEV: valida punta a punta con el estatus que devuelve el servicio
+  // Folio real en DEV por cada estatus: valida el estatus que devuelve el servicio y cómo se pintan las etapas
   for (const { estatus, folio, etapas } of ESTATUS) {
-    test(`CA10 - Folio real en estatus "${estatus}" (${folio}) marca etapas: ${etapas.join(", ")}`, async ({ page }) => {
+    test(`CA10 - Estatus "${estatus}" (${folio}) marca etapas: ${etapas.join(", ")}`, async ({ page }) => {
       await irAConsultaSeguimiento(page);
       const respuesta = page.waitForResponse((r) => r.url().includes(`/api/seguimiento/${folio}`));
       await consultarFolio(page, folio);

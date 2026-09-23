@@ -10,8 +10,8 @@ const DATOS = {
 };
 // ============================================
 
-test.describe('Formulario de Reclamaciones - Seguimiento', () => {
-  test('debe consultar el estado de un trámite existente', async ({ page }) => {
+test.describe('Camino feliz - Seguimiento', () => {
+  test('Consultar el estado de un trámite existente', async ({ page }) => {
 
     // ===== PASO 1: Seleccionar tipo de trámite =====
     await abrirPaso1YSeleccionar(page, 'seguimiento');
