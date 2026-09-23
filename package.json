@@ -9,7 +9,12 @@
     "test:complemento": "playwright test complemento.spec.js --headed",
     "test:reconsideracion": "playwright test reconsideracion.spec.js --headed",
     "test:seguimiento": "playwright test seguimiento.spec.js --headed",
-    "test:validaciones": "playwright test complemento_validaciones_P2.spec.js reconsideracion_validaciones_P2.spec.js seguimiento_validaciones.spec.js --workers=2 --headed",
+    "test:nueva-solicitud": "playwright test nueva-solicitud.spec.js --headed",
+    "test:validaciones:complemento": "playwright test complemento_validaciones_P2.spec.js --headed",
+    "test:validaciones:reconsideracion": "playwright test reconsideracion_validaciones_P2.spec.js --headed",
+    "test:validaciones:seguimiento": "playwright test seguimiento_validaciones.spec.js --headed",
+    "test:validaciones:nueva-solicitud": "playwright test nueva_solicitud_validaciones_P2.spec.js --headed",
+    "test:validaciones:full": "playwright test complemento_validaciones_P2.spec.js reconsideracion_validaciones_P2.spec.js seguimiento_validaciones.spec.js nueva_solicitud_validaciones_P2.spec.js --workers=2 --headed",
     "test:ui": "playwright test --ui",
     "report": "node scripts/show-latest-report.js"
   },
