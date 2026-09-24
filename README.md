@@ -26,7 +26,11 @@ Actualmente se automatizan los siguientes tipos de trámite:
 | --------------- | ------ | -------- | -------------------------------------- |
 | Nueva solicitud | Paso 2 | —        | `tests/nueva-solicitud/P2.spec.js`  |
 | Complemento     | Paso 2 | —        | `tests/complemento/P2.spec.js`      |
-| Reconsideración | Paso 2 | —        | `tests/reconsideracion/P2.spec.js`  |
+| Reconsideración | Paso 1 | HU 20862 | `tests/reconsideracion/P1HU_20862.spec.js` |
+| Reconsideración | Paso 2 | HU 20864 | `tests/reconsideracion/P2HU_20864.spec.js` |
+| Reconsideración | Paso 3 | HU 20865 | `tests/reconsideracion/P3HU_20865.spec.js` |
+| Reconsideración | Paso 4 | HU 20868 | `tests/reconsideracion/P4HU_20868.spec.js` |
+| Reconsideración | Acuse (Paso 5) | HU 26607 | `tests/reconsideracion/P5HU_26607.spec.js` |
 | Seguimiento     | Paso 1 | HU 24607 | `tests/seguimiento/P1HU_24607.spec.js` |
 
 ---
@@ -39,9 +43,9 @@ form-siniestros/
 │   └── workflows/
 │       └── playwright.yml
 ├── data/
-│   ├── PRUEBA.png
-│   ├── PRUEBA.pdf
-│   ├── PRUEBA.xlsx
+│   ├── PRUEBA.<ext>          # uno por cada formato permitido (pdf, docx, png, zip, msg…)
+│   ├── INVALIDO.<ext>        # formatos no permitidos (md, mhtml, mpeg)
+│   ├── PDF_15 MB.pdf         # pesa 37.7 MB: supera el máximo de 15 MB
 │   └── folios_generados.txt
 ├── reports/
 │   └── reporte_<fecha>_<hora>/
@@ -58,7 +62,11 @@ form-siniestros/
 │   │   └── P2.spec.js
 │   ├── reconsideracion/
 │   │   ├── happy_path.spec.js
-│   │   └── P2.spec.js
+│   │   ├── P1HU_20862.spec.js
+│   │   ├── P2HU_20864.spec.js
+│   │   ├── P3HU_20865.spec.js
+│   │   ├── P4HU_20868.spec.js
+│   │   └── P5HU_26607.spec.js
 │   └── seguimiento/
 │       ├── happy_path.spec.js
 │       └── P1HU_24607.spec.js
@@ -80,7 +88,7 @@ Una carpeta por flujo, con un archivo por HU (una HU por paso):
 
 * `<flujo>/happy_path.spec.js` → camino feliz del flujo completo.
 * `<flujo>/P<N>HU_<número>.spec.js` → validaciones de la HU del paso N contra sus criterios de aceptación (ej. `P1HU_24607.spec.js` = Paso 1, HU 24607). Mientras no se asocie la HU, el archivo se llama solo `P<N>.spec.js`.
-* `helpers/navegacion.js` → funciones compartidas por todos los flujos (ej. abrir el Paso 1 y seleccionar un trámite, recargando si la página no responde).
+* `helpers/navegacion.js` → funciones compartidas por todos los flujos (ej. abrir el Paso 1 y seleccionar un trámite, recargando si la página no responde, o llegar a un paso concreto como `irAPaso2Reconsideracion` / `irAPaso3Reconsideracion`), además de los campos y datos válidos de cada paso.
 
 Para agregar la HU de un paso nuevo basta con crear `tests/<flujo>/P<N>HU_<número>.spec.js`: los comandos `:validaciones` y `:full` del flujo la incluyen automáticamente.
 
@@ -157,7 +165,11 @@ Trámites disponibles: `nueva-solicitud`, `complemento`, `reconsideracion`, `seg
 | `test:complemento:validaciones`      | `playwright test tests/complemento/P[0-9] --workers=2 --headed`               |
 | `test:complemento:full`              | `playwright test tests/complemento/ --workers=2 --headed`                   |
 | `test:reconsideracion`               | `playwright test tests/reconsideracion/happy_path.spec.js --headed`    |
+| `test:reconsideracion:p1`         | `playwright test tests/reconsideracion/P1 --headed`                      |
 | `test:reconsideracion:p2`         | `playwright test tests/reconsideracion/P2 --headed`                      |
+| `test:reconsideracion:p3`         | `playwright test tests/reconsideracion/P3 --headed`                      |
+| `test:reconsideracion:p4`         | `playwright test tests/reconsideracion/P4 --headed`                      |
+| `test:reconsideracion:p5`         | `playwright test tests/reconsideracion/P5 --headed`                      |
 | `test:reconsideracion:validaciones`  | `playwright test tests/reconsideracion/P[0-9] --workers=2 --headed`           |
 | `test:reconsideracion:full`          | `playwright test tests/reconsideracion/ --workers=2 --headed`               |
 | `test:seguimiento`                   | `playwright test tests/seguimiento/happy_path.spec.js --headed`            |
