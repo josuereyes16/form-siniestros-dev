@@ -24,7 +24,8 @@ Actualmente se automatizan los siguientes tipos de trámite:
 
 | Trámite         | Paso   | HU       | Spec                                   |
 | --------------- | ------ | -------- | -------------------------------------- |
-| Nueva solicitud | Paso 2 | —        | `tests/nueva-solicitud/P2.spec.js`  |
+| Nueva solicitud | Paso 2 | HU 27931 | `tests/nueva-solicitud/P2HU_27931.spec.js` |
+| Nueva solicitud | Paso 5 | HU 28454 | `tests/nueva-solicitud/P5HU_28454.spec.js` |
 | Complemento     | Paso 2 | —        | `tests/complemento/P2.spec.js`      |
 | Reconsideración | Paso 1 | HU 20862 | `tests/reconsideracion/P1HU_20862.spec.js` |
 | Reconsideración | Paso 2 | HU 20864 | `tests/reconsideracion/P2HU_20864.spec.js` |
@@ -56,7 +57,8 @@ form-siniestros/
 │   │   └── navegacion.js
 │   ├── nueva-solicitud/
 │   │   ├── happy_path.spec.js
-│   │   └── P2.spec.js
+│   │   ├── P2HU_27931.spec.js
+│   │   └── P5HU_28454.spec.js
 │   ├── complemento/
 │   │   ├── happy_path.spec.js
 │   │   └── P2.spec.js
@@ -158,6 +160,7 @@ Trámites disponibles: `nueva-solicitud`, `complemento`, `reconsideracion`, `seg
 | ------------------------------------ | --------------------------------------------------------------------------- |
 | `test:nueva-solicitud`               | `playwright test tests/nueva-solicitud/happy_path.spec.js --headed`    |
 | `test:nueva-solicitud:p2`         | `playwright test tests/nueva-solicitud/P2 --headed`                      |
+| `test:nueva-solicitud:p5`         | `playwright test tests/nueva-solicitud/P5 --headed`                      |
 | `test:nueva-solicitud:validaciones`  | `playwright test tests/nueva-solicitud/P[0-9] --workers=2 --headed`           |
 | `test:nueva-solicitud:full`          | `playwright test tests/nueva-solicitud/ --workers=2 --headed`               |
 | `test:complemento`                   | `playwright test tests/complemento/happy_path.spec.js --headed`            |
@@ -208,6 +211,16 @@ npx playwright test --project=chromium
 ---
 
 ## 🧪 Cobertura de pruebas
+
+### 🆕 Nueva solicitud
+
+El flujo automatizado contempla:
+
+* Camino feliz completo hasta la generación del folio.
+* Paso 2 - Consulta de póliza (HU 27931, CA01–CA10): formato del número de póliza (solo números, 1–20 dígitos, sin espacios), catálogos de Oficina y Ramo, habilitación de Validar, estado "Validando tu póliza con SURA…", póliza activa, no activa y no encontrada, carátula "Verificado por SURA" y habilitación de Continuar.
+* Paso 5 - ¿Qué ocurrió? (HU 28454, CA01–CA15): título y mensajes, eventos de la póliza con su descripción e ícono, selección única y cambio de evento, coberturas según la matriz evento-cobertura, selección múltiple y deselección, estado de Continuar, avance al Paso 6, conservación de la selección al ir y volver, y modal de Reiniciar. Los eventos están mockeados (siempre NATURAL, ENFERMEDAD y ACCIDENTE); los tests de CA02/CA03 lo dejan como anotación en el reporte.
+
+> En DEV el servicio de pólizas está mockeado: `11111111` responde activa y `222222` no activa (se pueden sobrescribir desde `.env` con `POLIZA_ACTIVA` y `POLIZA_NO_ACTIVA`). El mock nunca responde "no encontrada", por lo que ese caso se simula interceptando `/api/polizas/`; el estado "Validando…" también se prueba retrasando esa respuesta.
 
 ### 📄 Complemento
 

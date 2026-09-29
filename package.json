@@ -8,6 +8,7 @@
     "test:headed": "playwright test --workers=2 --headed",
     "test:nueva-solicitud": "playwright test tests/nueva-solicitud/happy_path.spec.js --headed",
     "test:nueva-solicitud:p2": "playwright test tests/nueva-solicitud/P2 --headed",
+    "test:nueva-solicitud:p5": "playwright test tests/nueva-solicitud/P5 --headed",
     "test:nueva-solicitud:validaciones": "playwright test tests/nueva-solicitud/P[0-9] --workers=2 --headed",
     "test:nueva-solicitud:full": "playwright test tests/nueva-solicitud/ --workers=2 --headed",
     "test:complemento": "playwright test tests/complemento/happy_path.spec.js --headed",
